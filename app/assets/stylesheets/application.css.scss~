@@ -53,8 +53,8 @@ body {
 
 .container {
 	width: 100%;
-	max-width: 750px;
 	text-align: center;
+	max-width: 750px;
 	background: $white_opaque;
 	margin: 3em auto 0 auto;
 	border-radius: 7px;
@@ -212,4 +212,6 @@ input[type="submit"] {
 		color: white;
 	}
 }
+
 ::-webkit-input-placeholder { color: $dark; }
+
