@@ -1,28 +1,42 @@
-== README
+Given tables: 
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+★ tasks (id, name, status, project_id) 
 
-Things you may want to cover:
+★ projects (id, name)
 
-* Ruby version
+Write the queries for:
 
-* System dependencies
+1. get all statuses, not repeating, alphabetically ordered
+  SELECT DISTINCT status FROM tasks ORDER BY status;
+  
+2. get the count of all tasks in each project, order by tasks count descending
+  SELECT COUNT(*) FROM tasks GROUP BY project_id ORDER BY COUNT(*) DESC;
+  
+3. get the count of all tasks in each project, order by projects names
+  SELECT COUNT(*) FROM tasks INNER JOIN projects ON tasks.project_id = projects.id 
+                                           GROUP BY project_id ORDER BY prejects.name DESC;
+4. get the tasks for all projects having the name beginning with “N” letter
+ SELECT * FROM tasks INNER JOIN projects ON 
+               tasks.project_id = projects.id WHERE projects.name LIKE 'N%';
+5. get the list of all projects containing the ‘a’ letter in the middle of the name, and show the tasks count near each project. Mention that there can exist projects without tasks and tasks with project_id=NULL
+SELECT `projects`.`name` , COUNT( `tasks`.`id` ) AS cnt
+	FROM `tasks` , `projects`
+	WHERE `projects`.`id` = `tasks`.`project_id`, `projects`.`name` like '%a%'
+	GROUP BY `projects`.`name`
+	ORDER BY `projects`.`name`;
+	
+6. get the list of tasks with duplicate names. Order alphabetically
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+  SELECT t1.name FROM task t1 INNER JOIN tasks t2 O
+                    N t1.name = t2.name AND t1.id != t2.id ORDER by t1.name;
+                    
+7. get the list of tasks having several exact matches of both name and status, from the project ‘Garage’. Order by matches count
+  SELECT t1.name FROM tasks t1 INNER JOIN tasks t2 ON
+      t1.name = t2.name AND t1.status = t2.status AND t1.id != t2.id 
+      INNER JOIN projects ON t1.project_id = projects.id  WHERE projects.name = 'Garage'
+      GROUP BY t1.name ORDER BY COUNT(*);
+      
+8. get the list of project names having more than 10 tasks in status ‘completed’. Order by project_id
+  SELECT projects.name FROM projects INNER JOIN tasks ON 
+                               projects.id = tasks.id AND tasks.status = 'completed' 
+                               GROUP BY tasks.project_id HAVING COUNT(*) > 10 ORDER BY project_id;
